@@ -86,7 +86,8 @@
 		$(window).scroll(function() {
 		   if($(window).scrollTop() + $(window).height() > $(document).height() - 5) {
 				<!-- $("#status").html("Loading..."); -->
-				getUserPhotos("183799800@N08");
+				setTimeout(function(){ getUserPhotos("183799800@N08"); }, 2000);
+				
 		   }
 		});
     </script>
