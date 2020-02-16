@@ -6,9 +6,8 @@
     <title>Document</title>
 </head>
 <body>
-    <p id="status"></p>
     <div id="result"></div>
-
+    <p id="status"></p>
 
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
@@ -17,7 +16,7 @@
     <script>
         var url = "https://api.flickr.com/services/rest/";
         var key = "23714f0e0aca70b5e9354c77d86a8306";
-        var perPage = 500;
+        var perPage = 10;
         var currentPage = 1;
         var totalPhotos;
         var totalPages;
@@ -66,7 +65,8 @@
                 currentPage++;
             } else {
                 clearInterval(interval);
-                $("#status").html("There are " + totalPhotos + " photos from the account:");
+				alert("Show all");
+                <!-- $("#status").html("Show all"); -->
             }
         }
 
@@ -79,10 +79,16 @@
             if (output === undefined) output = photo.url_m;
             return output;
         }
-
+		
         $("#result").html("");
-        currentPage = 1;
-        interval = setInterval(getUserPhotos("183799800@N08"), 3000);  
+		getUserPhotos("183799800@N08")
+		
+		$(window).scroll(function() {
+		   if($(window).scrollTop() + $(window).height() > $(document).height() - 10) {
+				interval = setInterval(getUserPhotos("183799800@N08"), 3000);
+				<!-- $("#status").html("Loading..."); -->
+		   }
+		});
     </script>
     
 </body>
