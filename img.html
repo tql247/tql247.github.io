@@ -16,7 +16,7 @@
     <script>
         var url = "https://api.flickr.com/services/rest/";
         var key = "23714f0e0aca70b5e9354c77d86a8306";
-        var perPage = 10;
+        var perPage = 15;
         var currentPage = 1;
         var totalPhotos;
         var totalPages;
@@ -64,7 +64,7 @@
                 $("#result").html($("#result").html() + output);
                 currentPage++;
             } else {
-                clearInterval(interval);
+                <!-- clearInterval(interval); -->
 				alert("Show all");
                 <!-- $("#status").html("Show all"); -->
             }
@@ -84,9 +84,9 @@
 		getUserPhotos("183799800@N08")
 		
 		$(window).scroll(function() {
-		   if($(window).scrollTop() + $(window).height() > $(document).height() - 10) {
-				interval = setInterval(getUserPhotos("183799800@N08"), 3000);
+		   if($(window).scrollTop() + $(window).height() > $(document).height() - 5) {
 				<!-- $("#status").html("Loading..."); -->
+				getUserPhotos("183799800@N08");
 		   }
 		});
     </script>
