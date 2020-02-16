@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Get photo links from Flickr</h1>
+    <p id="status"></p>
+    <div id="result"></div>
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script>
+        var url = "https://api.flickr.com/services/rest/";
+        var key = "23714f0e0aca70b5e9354c77d86a8306";
+        var perPage = 500;
+        var currentPage = 1;
+        var totalPhotos;
+        var totalPages;
+        var extras = "url_m, url_n, url_z, url_c, url_l, url_o";
+        var reqParams;
+        var interval;
+        
+        function getUserPhotos(user) {
+            reqParams = {
+                    "api_key": key,
+                    "method": "flickr.people.getPublicPhotos",
+                    "user_id": user,
+                    "extras": extras,
+                    "per_page": perPage,
+                    "page": currentPage,
+                    "format": "json",
+                    "nojsoncallback": 1
+                };
+            $.getJSON(url, reqParams, callBack);
+        }
+
+        function callBack(data, status) {
+            console.log(data)
+            var photoObj = data.photos;
+            totalPhotos = photoObj.total;
+            totalPages = photoObj.pages;
+            listPhotos(photoObj.photo);
+        }
+
+        function listPhotos(photoArray) {    
+            if (currentPage <= totalPages) {
+                var directLink = "";
+                var link = "";
+                // var title = "";
+                var output = "";
+                
+                for (var i = 0; i < photoArray.length; i++) {
+                    directLink = getLargestSize(photoArray[i]);
+                    img = "<img src='" + directLink + "'>";
+                    // title = photoArray[i].title ? " - <span>" + photoArray[i].title + "</span>" : "";
+                    
+                    output += img;
+                }
+
+                $("#result").html($("#result").html() + output);
+                currentPage++;
+            } else {
+                clearInterval(interval);
+                $("#status").html("There are " + totalPhotos + " photos from the account:");
+            }
+        }
+
+        function getLargestSize(photo) {
+            var output = photo.url_o;
+            if (output === undefined) output = photo.url_l;
+            if (output === undefined) output = photo.url_c;
+            if (output === undefined) output = photo.url_z;
+            if (output === undefined) output = photo.url_n;
+            if (output === undefined) output = photo.url_m;
+            return output;
+        }
+
+        $("#result").html("");
+        currentPage = 1;
+        interval = setInterval(getUserPhotos("183799800@N08"), 3000);  
+    </script>
+    
+</body>
+</html>
