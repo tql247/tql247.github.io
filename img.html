@@ -14,7 +14,7 @@
     <script>
         var url = "https://api.flickr.com/services/rest/";
         var key = "23714f0e0aca70b5e9354c77d86a8306";
-        var perPage = 50;
+        var perPage = 15;
         var currentPage = 1;
         var totalPhotos;
         var totalPages;
@@ -39,8 +39,8 @@
         function callBack(data, status) {
             console.log(data)
             var photoObj = data.photos;
-            totalPhotos = photoObj.total;
             totalPages = photoObj.pages;
+			totalPhotos = photoObj.total;
             listPhotos(photoObj.photo);
         }
 
@@ -87,7 +87,7 @@
                 curr_width += $("#result").children()[i].width;
 
                 nextImgWidth = $("#result").children()[i+1]==undefined?0:$("#result").children()[i+1].width;
-                if (curr_width + nextImgWidth > wd){
+                if (curr_width + nextImgWidth > wd && currentPage < totalPages){
                     var x = wd/(curr_width + 5); 
                     for (j = curr_perfect; j <= i; j++) {
                         $("#result").children()[j].height *= x;
@@ -97,9 +97,9 @@
                 }
             }
         }
-        var old = "183799800@N08";
+		
         getUserPhotos("187011915@N02");
-        perPage = 15;
+        <!-- perPage = 15; -->
         setTimeout(function() {
             currendPerfect()
             console.log("perfect");
@@ -134,11 +134,11 @@
 		   if(Math.round($(window).scrollTop() + $(window).height()) == $(document).height()) {
 				// <!-- $("#status").html("Loading..."); -->
                 // getUserPhotos("183799800@N08");
-                if (currentPage > curr_show) {
+                if (currentPage > curr_show && currentPage <= totalPages) {
                     console.log(1); 
                     setTimeout(function () {
                         console.log(2);
-                        getUserPhotos("183799800@N08");
+                        getUserPhotos("187011915@N02");
 
                     },3000); 
                     curr_show++;
