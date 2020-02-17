@@ -9,14 +9,12 @@
     <div id="result"></div>
     <p id="status"></p>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script>
         var url = "https://api.flickr.com/services/rest/";
         var key = "23714f0e0aca70b5e9354c77d86a8306";
-        var perPage = 15;
+        var perPage = 30;
         var currentPage = 1;
         var totalPhotos;
         var totalPages;
@@ -24,7 +22,7 @@
         var reqParams;
         var interval;
         
-        function getUserPhotos(user) {
+        async function getUserPhotos(user) {
             reqParams = {
                     "api_key": key,
                     "method": "flickr.people.getPublicPhotos",
@@ -55,7 +53,7 @@
                 
                 for (var i = 0; i < photoArray.length; i++) {
                     directLink = getLargestSize(photoArray[i]);
-                    img = "<img src='" + directLink + "'>";
+                    img = "<img height='200px' src='" + directLink + "'>";
                     // title = photoArray[i].title ? " - <span>" + photoArray[i].title + "</span>" : "";
                     
                     output += img;
@@ -64,9 +62,9 @@
                 $("#result").html($("#result").html() + output);
                 currentPage++;
             } else {
-                <!-- clearInterval(interval); -->
+                // <!-- clearInterval(interval); -->
 				alert("Show all");
-                <!-- $("#status").html("Show all"); -->
+                // <!-- $("#status").html("Show all"); -->
             }
         }
 
@@ -79,15 +77,72 @@
             if (output === undefined) output = photo.url_m;
             return output;
         }
-		
-        $("#result").html("");
-		getUserPhotos("183799800@N08")
-		
+
+        function perfect_creen() {
+            wd = $("#result").width();
+            curr_width = 0;
+            curr_perfect = 0;
+            for (i = 0; i < $("#result").children().length; i++) {
+
+                curr_width += $("#result").children()[i].width;
+
+                nextImgWidth = $("#result").children()[i+1]==undefined?0:$("#result").children()[i+1].width;
+                if (curr_width + nextImgWidth > wd){
+                    var x = wd/(curr_width + 5); 
+                    for (j = curr_perfect; j <= i; j++) {
+                        $("#result").children()[j].height *= x;
+                    }
+                    curr_perfect = i + 1;
+                    curr_width = 0;
+                }
+            }
+        }
+        
+        getUserPhotos("183799800@N08");
+        perPage = 15;
+        setTimeout(function() {
+            currendPerfect()
+            console.log("perfect");
+        }, 3000);
+        var curr_show = 1;
+
+        var curr_perfect = 0;
+        function currendPerfect() {
+            wd = $("#result").width();
+            curr_width = 0;
+            for (i = curr_perfect; i < $("#result").children().length; i++) {
+                curr_width += $("#result").children()[i].width;
+                
+                nextImgWidth = $("#result").children()[i+1]==undefined?0:$("#result").children()[i+1].width;
+                if (curr_width + nextImgWidth > wd){
+                    var x = wd/(curr_width + 5); 
+                    for (j = curr_perfect; j <= i; j++) {
+                        $("#result").children()[j].height *= x;
+                    }
+                    curr_perfect = i + 1;
+                    curr_width = 0;
+                }
+            }
+        }
+
+        $( window ).resize(function() {
+            perfect_creen();
+        });
+
 		$(window).scroll(function() {
-		   if($(window).scrollTop() + $(window).height() > $(document).height() - 5) {
-				<!-- $("#status").html("Loading..."); -->
-				setTimeout(function(){ getUserPhotos("183799800@N08"); }, 2000);
-				
+            currendPerfect();
+		   if(Math.round($(window).scrollTop() + $(window).height()) == $(document).height()) {
+				// <!-- $("#status").html("Loading..."); -->
+                // getUserPhotos("183799800@N08");
+                if (currentPage > curr_show) {
+                    console.log(1); 
+                    setTimeout(function () {
+                        console.log(2);
+                        getUserPhotos("183799800@N08");
+
+                    },3000); 
+                    curr_show++;
+                }
 		   }
 		});
     </script>
