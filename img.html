@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hotloading</title>
+	<style>
+	</style>
 </head>
 <body>
     <div id="result"></div>
@@ -14,13 +16,15 @@
     <script>
         var url = "https://api.flickr.com/services/rest/";
         var key = "23714f0e0aca70b5e9354c77d86a8306";
-        var perPage = 15;
+        var perPage = 500;
         var currentPage = 1;
         var totalPhotos;
         var totalPages;
         var extras = "url_m, url_n, url_z, url_c, url_l, url_o";
         var reqParams;
         var interval;
+		var flickr_user_name;
+		var curr_show;
         
         async function getUserPhotos(user) {
             reqParams = {
@@ -97,15 +101,22 @@
                 }
             }
         }
+		//187011915@N02
 		
-        getUserPhotos("187011915@N02");
-        <!-- perPage = 15; -->
-        setTimeout(function() {
-            currendPerfect()
-            console.log("perfect");
-        }, 3000);
-        var curr_show = 1;
-
+        function start() {
+			flickr_user_name = prompt();
+			if (flickr_user_name != null) {
+				getUserPhotos(flickr_user_name);
+				setTimeout(function() {
+					currendPerfect()
+					console.log("perfect");
+				}, 5000);
+				curr_show = 1;
+			 
+			}
+		}
+		
+		
         var curr_perfect = 0;
         function currendPerfect() {
             wd = $("#result").width();
@@ -124,21 +135,18 @@
                 }
             }
         }
-
-        $( window ).resize(function() {
-            perfect_creen();
-        });
+		
 
 		$(window).scroll(function() {
             currendPerfect();
 		   if(Math.round($(window).scrollTop() + $(window).height()) == $(document).height()) {
-				// <!-- $("#status").html("Loading..."); -->
+			
                 // getUserPhotos("183799800@N08");
                 if (currentPage > curr_show && currentPage <= totalPages) {
                     console.log(1); 
                     setTimeout(function () {
                         console.log(2);
-                        getUserPhotos("187011915@N02");
+                        getUserPhotos(flickr_user_name);
 
                     },3000); 
                     curr_show++;
