@@ -104,7 +104,8 @@
 		
         function start() {
 			flickr_user_name = prompt("ID:");
-			currentPage = prompt("Start page: ");
+			currentPage = parseInt(prompt("Start page: "));
+			perPage = parseInt(prompt("Number Image load each time: "));
 			if (flickr_user_name != null) {
 				getUserPhotos(flickr_user_name);
 				setTimeout(function() {
