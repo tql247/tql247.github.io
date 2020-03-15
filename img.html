@@ -41,7 +41,6 @@
         }
 
         function callBack(data, status) {
-            console.log(data)
             var photoObj = data.photos;
             totalPages = photoObj.pages;
 			totalPhotos = photoObj.total;
@@ -143,9 +142,7 @@
 			
                 // getUserPhotos("183799800@N08");
                 if (currentPage > curr_show && currentPage <= totalPages) {
-                    console.log(1); 
                     setTimeout(function () {
-                        console.log(2);
                         getUserPhotos(flickr_user_name);
 
                     },3000); 
