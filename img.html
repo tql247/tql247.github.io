@@ -103,7 +103,8 @@
 		//187011915@N02
 		
         function start() {
-			flickr_user_name = prompt();
+			flickr_user_name = prompt("ID:");
+			currentPage = prompt("Start page: ");
 			if (flickr_user_name != null) {
 				getUserPhotos(flickr_user_name);
 				setTimeout(function() {
