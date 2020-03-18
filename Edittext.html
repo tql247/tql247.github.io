@@ -120,13 +120,22 @@
             display: none;
         }
 
+        .del {
+            width: 14px;
+            height: 14px;
+            background-image: url("https://i.ya-webdesign.com/images/edit-delete-icon-png.png");
+            background-size: 14px;
+            cursor: pointer;
+            opacity: 1;
+        }
+
     </style>
 </head>
 <body style="width: 1200px; overflow: auto;">
-    <!-- <div id="overlay"></div>
+    <div id="overlay"></div>
     <div id="initial">
         <textarea id="input"></textarea>
-    </div> -->
+    </div>
 
     <menucontext style="position: fixed; right: 10px; top: 5px;">
         <div align="center">
@@ -219,6 +228,8 @@
                 node += "<p class='num'>" + (crr_line++) + "</p>";
                 node += "<div class='line' onkeyup='updatePreview()' onmouseup='editText(event)' contenteditable='false' style='width: 500px;'>" + msg + "</div>";
                 node += "<div class='lock' onclick='lock_edit(event)'></div>"
+                node += "<div class='del' onclick='remove_line(event)'></div>"
+                node += "</div>";
             return node;
         }
 
@@ -288,6 +299,10 @@
 
         function hidden_preview(event) {
             event.currentTarget.parentNode.style.display = "none";
+        }
+
+        function remove_line(event) {
+            event.currentTarget.parentNode.style.display="none";
         }
 
     </script>
