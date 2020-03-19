@@ -117,7 +117,7 @@
 
         .preview-row{
             position: relative;
-            display: none;
+            /* display: none; */
         }
 
         .del {
@@ -144,6 +144,10 @@
             width: 0px;
         }
 
+        #copy {
+            cursor: pointer;
+
+        }
     </style>
 </head>
 <body style="width: 1200px; overflow: auto;">
@@ -157,6 +161,7 @@
             <div><strong id="b">B</strong></div>
             <div><em id="i">I</em></div>
             <div><strong id="a" style="border: 0.5px black solid; font-family: 'Courier New', Courier, monospace; padding: 0 3px 0 3px;">+</strong></div>
+            <div id="copy">C</div>
         </div>
     </menucontext>
 
@@ -207,12 +212,24 @@
             if (nodeSelect != undefined) {
                 var idx = getIndex(nodeSelect.parentNode, document.getElementById("table").childNodes);
                 $(newLine("New line")).insertAfter(nodeSelect.parentNode);
-                $(newPreview()).insertAfter(document.getElementById("preview").childNodes[idx]);
+                $(newPreview("")).insertAfter(document.getElementById("preview").childNodes[idx]);
             } else {
                 $("#table").html($("#table").html() + newLine("New line"));   
-                $("#preview").html($("#preview").html() + newPreview());    
+                $("#preview").html($("#preview").html() + newPreview(""));    
             }
 
+        });
+
+        $("#copy").click(function () {
+            var t = document.getElementById("table").childNodes
+            var tData = "";
+
+            t.forEach(e => {
+                if (e.toString() != "[object Text]")
+                    if (e.style.display == "")
+                        tData += e.childNodes[1].innerHTML + "\n";
+            })
+            copyStringToClipboard(tData);
         });
 
         function getIndex(child, ls_child) {
@@ -251,9 +268,9 @@
             return node;
         }
 
-        function newPreview() {
+        function newPreview(text) {
             var node  = "<div class='preview-row'>";
-                node += "<p></p>";
+                node += "<p>" + text + "</p>";
                 node += "<div class='hidden' onclick='hidden_preview(event)'></div>";
                 node += "</div>";
             return node;
@@ -274,11 +291,9 @@
                         line = $('#input').val().split("\n");
                         for (i = 0; i < line.length; i++) {
                             $("#table").html($("#table").html() + newLine(line[i]));
-                            $("#preview").html($("#preview").html() + newPreview());     
+                            $("#preview").html($("#preview").html() + newPreview(line[i]));     
                         }
 
-
-                        // $("#table").html($("#table").html() + newLine())
                     }
                 }
             }).keyup(function(e) {
@@ -336,6 +351,26 @@
             // For Safari
             return 'Sure?';
         };
+
+        function copyStringToClipboard (str) {
+            // Create new element
+            var el = document.createElement('textarea');
+            // Set value (string to be copied)
+            el.value = str;
+            // Set non-editable to avoid focus and move outside of view
+            el.setAttribute('readonly', '');
+            el.style = {position: 'absolute', left: '-9999px'};
+            document.body.appendChild(el);
+            // Select text inside element
+            el.select();
+            // Copy text to clipboard
+            document.execCommand('copy');
+            // Remove temporary element
+            document.body.removeChild(el);
+        }
+
+        
+
 
     </script>
 </body>
