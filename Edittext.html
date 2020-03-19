@@ -164,7 +164,9 @@
 
     <p></p>
     <div align="right">
-        <div id="preview" align="left">
+        <div style="position: fixed;">
+            <div id="preview" align="left">
+            </div>
         </div>
         <div id="table" align="left" style="width: 620px;">
         </div>
@@ -233,9 +235,10 @@
                     break;
                 }
             }
-
+            
             document.getElementById("preview").childNodes[index].style.display = "block";
             document.getElementById("preview").childNodes[index].childNodes[0].innerHTML = nodeSelect.innerHTML;
+            nodeSelect.parentNode.style.backgroundColor = "";
         }
 
         function newLine(msg) {
@@ -314,6 +317,8 @@
 
         function hidden_preview(event) {
             event.currentTarget.parentNode.style.display = "none";
+            var idx = getIndex(event.currentTarget.parentNode, document.getElementById("preview").childNodes);
+            document.getElementById("table").childNodes[idx].style.backgroundColor = "grey";
         }
 
         function remove_line(event) {
