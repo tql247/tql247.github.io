@@ -358,7 +358,7 @@
                         console.log();
                         line = $('#input').val().split("\n");
                         for (i = 0; i < line.length; i++) {
-                            if (newLine(line[i]) != "") {
+                            if (line[i] != "") {
                                 $("#table").html($("#table").html() + newLine(line[i]));
                                 $("#preview").html($("#preview").html() + newPreview(line[i]));  
                             }   
