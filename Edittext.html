@@ -358,8 +358,10 @@
                         console.log();
                         line = $('#input').val().split("\n");
                         for (i = 0; i < line.length; i++) {
-                            $("#table").html($("#table").html() + newLine(line[i]));
-                            $("#preview").html($("#preview").html() + newPreview(line[i]));     
+                            if (newLine(line[i]) != "") {
+                                $("#table").html($("#table").html() + newLine(line[i]));
+                                $("#preview").html($("#preview").html() + newPreview(line[i]));  
+                            }   
                         }
 
                     }
