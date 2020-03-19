@@ -146,7 +146,18 @@
 
         #copy {
             cursor: pointer;
+            width: 14px;
+            height: 14px;
+            background-image: url("https://cdn1.iconfinder.com/data/icons/document-edit-line/64/Document-doc-file-copy-paste-files-papers-512.png");
+            background-size: 14px;
+        }
 
+        #finish {
+            cursor: pointer;
+            width: 14px;
+            height: 14px;
+            background-image: url("https://cdn2.iconfinder.com/data/icons/why8-office-material-solid/32/Artboard_49_copy_2-512.png");
+            background-size: 14px;
         }
 
         #counting {
@@ -170,7 +181,11 @@
             <div><strong id="b">B</strong></div>
             <div><em id="i">I</em></div>
             <div><strong id="a" style="border: 0.5px black solid; font-family: 'Courier New', Courier, monospace; padding: 0 3px 0 3px;">+</strong></div>
-            <div id="copy">C</div>
+            <hr style="margin-top: 0px;">
+            <div id="copy"></div>
+            <hr>
+            <div id="finish"></div>
+            <hr style="margin-bottom: 0px;">
         </div>
     </menucontext>
 
@@ -193,8 +208,10 @@
         var nodeSelect = undefined;
         var crr_line = 1;
         var select_idx;
+        var status = "false";
 
         function editText (event) {
+            status = "true";
             nodeSelect = event.currentTarget;
             textSelect = getSelectedText().toString().trim();
         }
@@ -240,6 +257,25 @@
                         tData += e.childNodes[1].innerHTML + "\n";
             })
             copyStringToClipboard(tData);
+            status = "false";
+            alert("Copied!")
+        });
+
+        $("#finish").click(function () {
+            var preview = document.getElementById("preview").childNodes;
+            var e;
+            var contentText = "";
+
+            for (i = 1; i < preview.length; i++) {
+                e = preview[i]
+                if (e.style.display != "none") {
+                    contentText += e.childNodes[0].innerHTML==""?"":e.childNodes[0].innerHTML + "\n";
+                }
+            }
+            
+            copyStringToClipboard(contentText);
+            status = "false";
+            alert("Finish!");
         });
 
         function getIndex(child, ls_child) {
@@ -286,7 +322,7 @@
                 }
             }
 
-            return c + " word, " + l + " line";
+            return c + " words, " + l + " lines";
         }
 
 
@@ -374,16 +410,12 @@
             document.getElementById("preview").childNodes[idx].style.display = "none";
         }
 
+        
         window.onbeforeunload = function (e) {
-            e = e || window.event;
-
-            // For IE and Firefox prior to version 4
-            if (e) {
-                e.returnValue = 'Sure?';
+            if(status == "true") {
+                e.preventDefault(); 
+                e.returnValue = ''; 
             }
-
-            // For Safari
-            return 'Sure?';
         };
 
         function copyStringToClipboard (str) {
