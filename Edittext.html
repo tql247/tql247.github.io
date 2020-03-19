@@ -338,6 +338,8 @@
 
         function remove_line(event) {
             event.currentTarget.parentNode.style.display="none";
+            var idx = getIndex(event.currentTarget.parentNode, event.currentTarget.parentNode.parentNode.childNodes);
+            document.getElementById("preview").childNodes[idx].style.display = "none";
         }
 
         window.onbeforeunload = function (e) {
