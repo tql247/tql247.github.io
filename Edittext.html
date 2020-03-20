@@ -405,12 +405,14 @@
             event.currentTarget.parentNode.style.display = "none";
             var idx = getIndex(event.currentTarget.parentNode, document.getElementById("preview").childNodes);
             document.getElementById("table").childNodes[idx].style.backgroundColor = "grey";
+	    updatePreview()
         }
 
         function remove_line(event) {
             event.currentTarget.parentNode.style.display="none";
             var idx = getIndex(event.currentTarget.parentNode, event.currentTarget.parentNode.parentNode.childNodes);
             document.getElementById("preview").childNodes[idx].style.display = "none";
+	    updatePreview()
         }
 
         
