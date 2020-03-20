@@ -214,6 +214,7 @@
             status = "true";
             nodeSelect = event.currentTarget;
             textSelect = getSelectedText().toString().trim();
+			updatePreview();
         }
         
         function replaceAt(src, oldText, newText, idx) {
@@ -258,7 +259,7 @@
             })
             copyStringToClipboard(tData);
             status = "false";
-            alert("Copied!")
+            alert("Copied!");
         });
 
         $("#finish").click(function () {
