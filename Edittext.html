@@ -237,13 +237,16 @@
         });
 
         $("#a").click(function () {
+            var newline = $(newLine("New line"));
+            var newLinePreview = $(newPreview(""));
+
             if (nodeSelect != undefined) {
                 var idx = getIndex(nodeSelect.parentNode, document.getElementById("table").childNodes);
-                $(newLine("New line")).insertAfter(nodeSelect.parentNode);
-                $(newPreview("")).insertAfter(document.getElementById("preview").childNodes[idx]);
+                newline.insertAfter(nodeSelect.parentNode);
+                newLinePreview.insertAfter(document.getElementById("preview").childNodes[idx]);
             } else {
-                $("#table").html($("#table").html() + newLine("New line"));   
-                $("#preview").html($("#preview").html() + newPreview(""));    
+                $("#table").append(newline);   
+                $("#preview").append(newLinePreview);    
             }
 
         });
@@ -290,6 +293,9 @@
         }
 
         function updatePreview() {
+            if (nodeSelect == undefined)
+                return 1;
+
             var index = 0;
             var x = document.getElementById("table").childNodes;
 
@@ -365,6 +371,10 @@
                             }   
                         }
                         status = "true";
+
+                        document.getElementById("table").childNodes.forEach(e=>{
+                            jQuery.data(e, "lock", "true");
+                        })
                     }
                 }
             }).keyup(function(e) {
@@ -399,20 +409,29 @@
             event.currentTarget.style.opacity = event.currentTarget.style.opacity=="0.2"?"1":"0.2";
             event.currentTarget.parentNode.children[1].contentEditable = event.currentTarget.parentNode.children[1].contentEditable=="true"?"false":"true";
             // console.log(event.currentTarget.parentNode.contentEditable)
+            if (event.currentTarget.parentNode.children[1].contentEditable=="false")
+                jQuery.data(event.currentTarget.parentNode, "lock", "true");
+            else
+                jQuery.data(event.currentTarget.parentNode, "lock", "false");
+
         }
 
         function hidden_preview(event) {
             event.currentTarget.parentNode.style.display = "none";
             var idx = getIndex(event.currentTarget.parentNode, document.getElementById("preview").childNodes);
             document.getElementById("table").childNodes[idx].style.backgroundColor = "grey";
-	    updatePreview()
+	        updatePreview()
         }
 
         function remove_line(event) {
-            event.currentTarget.parentNode.style.display="none";
-            var idx = getIndex(event.currentTarget.parentNode, event.currentTarget.parentNode.parentNode.childNodes);
-            document.getElementById("preview").childNodes[idx].style.display = "none";
-	    updatePreview()
+            if (jQuery.data(event.currentTarget.parentNode, "lock")!="true") {
+                event.currentTarget.parentNode.style.display="none";
+                var idx = getIndex(event.currentTarget.parentNode, event.currentTarget.parentNode.parentNode.childNodes);
+                document.getElementById("preview").childNodes[idx].style.display = "none";
+                
+            }
+            
+	        updatePreview()
         }
 
         
