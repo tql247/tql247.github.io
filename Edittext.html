@@ -248,7 +248,7 @@
                 $("#table").append(newline);   
                 $("#preview").append(newLinePreview);    
             }
-
+		UpdateLine()
         });
 
         $("#copy").click(function () {
@@ -421,6 +421,7 @@
             var idx = getIndex(event.currentTarget.parentNode, document.getElementById("preview").childNodes);
             document.getElementById("table").childNodes[idx].style.backgroundColor = "grey";
 	        updatePreview()
+		UpdateLine()
         }
 
         function remove_line(event) {
@@ -432,6 +433,7 @@
             }
             
 	        updatePreview()
+		UpdateLine()
         }
 
         
@@ -460,7 +462,17 @@
         }
 
 
+        function UpdateLine() {
+		counter = 0;
+		for(i = 0; i < c.length; i ++) {
+ 		  if (c[i].style.display != "none") {
+   		     counter++;
+     			c[i].childNodes[0].innerText = counter;
+    
+   			 }
         
+		}
+	}
 
 
     </script>
