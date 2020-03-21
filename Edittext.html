@@ -462,16 +462,15 @@
         }
 
 
-        function UpdateLine() {
-		counter = 0;
-		for(i = 0; i < c.length; i ++) {
- 		  if (c[i].style.display != "none") {
-   		     counter++;
-     			c[i].childNodes[0].innerText = counter;
-    
-   			 }
-        
+       function UpdateLine() {
+	    var counter = 0
+	    for (i = 0; i < $(".row").length; i++) {
+		if ($(".row")[i].style.display != "none") {
+		    counter++;
+		    $(".row")[i].childNodes[0].textContent = counter;
 		}
+
+	    }
 	}
 
 
