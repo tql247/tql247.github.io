@@ -12,14 +12,22 @@
         img {
             border: 1px solid rgba(0, 0, 0, 0.192);
         }
+		
+		iframe {
+			display: none;
+		}
 	</style>
 </head>
 <body>
+	<iframe src="https://vocaroo.com/embed/iK1LPpWhHWF" frameborder="0">
+	</iframe>
+	
+	
     <div id="result" align="center">
     </div>
     <p id="status"></p>
 
-
+	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script>
@@ -102,7 +110,12 @@
                 }
 		   }
 		});
+		
     </script>
-    
+	<script defer>
+		//var audio = new Audio('https://media.vocaroo.com/mp3/iK1LPpWhHWF');
+		//audio.play();
+		//audio.volume = 0.05
+	</script>
 </body>
 </html>
