@@ -86,6 +86,7 @@
 
                 $("#result").html($("#result").html() + output);
                 currentPage++;
+                crr_load++;
             } else {
 				alert("Show all");
                 // <!-- $("#status").html("Show all"); -->
@@ -103,17 +104,20 @@
         }
 		
         flickr_user_name = "142936010@N08";
-		perPage = 3
+		perPage = 3;
+        var crr_req = 0;
+        var crr_load = 0;
         getUserPhotos(flickr_user_name);
 		
 		$(window).scroll(function() {
 		   if(Math.round($(window).scrollTop() + $(window).height()) > $(document).height() - 2) {
-                console.log("Get!");
                 if (currentPage <= totalPages) {
-                    setTimeout(function () {
-                        getUserPhotos(flickr_user_name);
-
-                    },500); 
+                    if (crr_load > crr_req) {
+                        crr_req++;
+                        setTimeout(function () {
+                            getUserPhotos(flickr_user_name);
+                        },500); 
+                    }
                 }
 		   }
 		});
