@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flexboxgrid/6.3.1/flexboxgrid.min.css" type="text/css" >
+  <link rel="icon" href="https://i.imgur.com/85mqVFn.png?1">
+  <title>Avgle</title>
+  <style>
+    .dark {
+      background-color: #212121;
+    }
+
+    .console {
+      font-family: 'Roboto Mono', monospace;
+      color:#FAFAFA;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .drawer{
+      /* opacity: 0; */
+      position: absolute;
+      top: 0;
+      left: -302px;
+      z-index: 10;
+      border: 1px solid #FAFAFA;
+      width: 300px;
+      background-color: #212121;
+
+      transition:  0.3s;
+      transition-timing-function: ease-in-out;
+    }
+
+    .open-drawer {
+      position: absolute;
+      background-color: transparent;
+      color: #FAFAFA;
+      border: 1px solid #FAFAFA;
+      top: 0;
+      left: -2px;
+      z-index: 100;
+      transition:  0.3s;
+      transition-timing-function: ease-in-out;
+    }
+
+    .list {
+      list-style: none;
+    }
+
+    .hashtags {
+      text-align: center;
+    }
+    
+    a {
+      text-decoration : none;
+      color: #FAFAFA;
+    }
+
+    a:hover {
+      color: black;
+      cursor: pointer;
+    }
+
+    .boxvideo {
+      border: 1px solid #fafafa;
+      position: relative;
+      height: 230px;
+      margin: 7px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    #listvideo {
+      justify-content: center;
+    }
+
+    #page {
+      margin: 15px;
+    }
+
+    input[type=text] {
+      outline: none;
+      background-color: #FAFAFA;
+      border: none;
+      width: 300px;
+    }
+
+    .searchbar {
+      margin-top: 15px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    button {
+      border: none;
+      outline: none;
+    }
+
+    #status {
+      text-align: center;
+    }
+
+    .preventSelect {
+      -moz-user-select: none; /* Firefox */
+      -ms-user-select: none; /* Internet Explorer */
+      -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+      -webkit-user-select: none; /* Chrome, Safari, and Opera */
+      -webkit-touch-callout: none; /* Disable Android and iOS callouts*/
+    }
+
+    .title {
+      font-size: 90px;
+      font-weight: bolder;
+      margin: 10px;
+    }
+
+    .previewImg {
+      top: 0;
+      left: 0;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+    }
+
+    .titleVideo {
+      top: 0;
+      position: absolute;
+    }
+
+    .hidden {
+      top: 0;
+      left: 0;
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      opacity: 0.1;
+    }
+  </style>
+  <script>
+    window.onload = function(e) {
+      function loadCSS (url) {
+        var css = document.createElement('link')
+        css.rel = 'stylesheet'
+        css.href = url
+        document.head.appendChild(css)
+      }
+
+      // Global variable
+      let drawerWindows = false;
+      let crrPage = 0;
+      let ctgList = [];
+      let crrCtg = null;
+      let crrFilter = null;
+      let crrVideo = null;
+      let videoList;
+      
+      let filter = {
+        "Last viewed" : "bw",
+        "Latest" : "mr",
+        "Most viewed" : "mv",
+        "Top rated" : "tr",
+        "Most favoured" : "tf",
+        "Longest" : "lg"
+      }
+
+
+      loadCSS("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap")
+      
+      function openDrawer() {
+        if (!drawerWindows) {
+          document.querySelector('.drawer').style.left = 0
+          document.querySelector(".open-drawer").style.left = "302px"
+
+        }
+        else {
+          document.querySelector('.drawer').style.left = "-302px"
+          document.querySelector(".open-drawer").style.left = "0px"
+        }
+
+        drawerWindows = !drawerWindows
+      }
+      
+      document.querySelector(".open-drawer").onclick = openDrawer
+
+      function getCategory() {
+        var result = fetch("https://api.avgle.com/v1/categories")
+          .then(response => response.text())
+          .then(result => result)
+          .catch(error => console.log('error', error));
+        
+        return result
+      }
+      
+      async function makeListCategory() {
+        var list = document.querySelector(".list")
+        var result = await getCategory();
+        var ctg
+        document.querySelector("#ctgStatus").innerHTML = ''
+
+        var listCategories = JSON.parse(result).response.categories
+
+        for (let idx = 0; idx < listCategories.length; idx++) {
+          ctg = listCategories[idx].slug
+
+          var a = document.createElement("a")
+          var li = document.createElement("li")
+          li.innerHTML = ctg
+          ctgList.push(ctg)
+          a.append(li)
+          list.appendChild(a)
+        }
+        
+      }
+
+
+      async function getAllVideo() {
+        var url = "https://api.avgle.com/v1/videos/0" 
+                  + (crrCtg==null&&crrFilter==null?"":"?") 
+                  + (crrCtg==null?"":"c=" + crrCtg)
+                  + (crrFilter==null?"":"o=" + crrFilter)
+
+        var result = fetch(url)
+          .then(response => response.text())
+          .then(result => result)
+          .catch(error => console.log('error', error));
+
+        return result
+      }
+
+      function updatePage() {
+        document.querySelector("#prePage").innerHTML = crrPage - 1
+        document.querySelector("#page").innerHTML = crrPage
+        document.querySelector("#nextPage").innerHTML = crrPage + 1
+      }
+
+      async function makeListAllVideo() {
+        document.querySelector("#status").textContent = 'Loading...'
+
+        var result = await getAllVideo()
+        var video = JSON.parse(result).response.videos
+        var box = document.querySelector("#listvideo")
+        document.querySelector("#listvideo").innerHTML = ''
+        var crrVideoList = []
+
+        for (let idx = 0; idx < video.length; idx++) {
+          v = video[idx]
+          crrVideoList.push(v)
+          var div = document.createElement("div")
+          div.innerHTML = `<div class="col-xs-12
+                                       col-sm-6
+                                       col-md-4
+                                       col-lg-3
+                                       col-2 boxvideo">
+                                       <img class="hidden" src="` + v.preview_url + `">
+                                       <img class="hidden" src="` + v.preview_url + `">
+                                       <img class="previewImg" src="https://imageog.flaticon.com/icons/png/512/891/891399.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF">
+                                       <a class="titleVideo" id="` + idx + `">` + v.title + `</a>
+                           </div>`
+          box.append(div.firstChild)
+        }
+
+        console.log(video)
+
+        document.querySelector("#status").textContent = ''
+        updatePage()
+
+        videoList = crrVideoList
+
+        setEventForTagsA()
+        handleHoverImage()
+      }
+
+      function getVideo() {
+        var url = "https://api.avgle.com/v1/video/" + crrVideo
+
+        var result = fetch(url)
+          .then(response => response.text())
+          .then(result => result)
+          .catch(error => console.log('error', error));
+
+        return result
+      }
+
+      async function viewVideo() {
+        // var result = await getVideo()
+        // result = JSON.parse(result).response.video
+        console.log(videoList[crrVideo])
+      }
+
+      function actionQuery (e) {
+        var val = e.srcElement.innerHTML
+        if (Number.isInteger(parseInt(val))) {
+          if (parseInt(val) > -1) {
+            crrPage -= crrPage - Math.abs(parseInt(val));
+            makeListAllVideo()
+            updatePage()
+          }
+        }
+        else if (ctgList.indexOf(val) > -1) {
+          crrCtg = ctgList.indexOf(val) + 1
+          makeListAllVideo()
+        }
+        else if (val in filter) {
+          crrFilter = filter[val]
+          makeListAllVideo()
+        }
+        else {
+          crrVideo = e.srcElement.id
+          console.log(crrVideo)
+          viewVideo()
+        }
+      }
+
+      function setEventForTagsA() {
+        var action = document.querySelectorAll("a")
+        for (let i = 0; i < action.length; i++) {
+          action[i].onclick = actionQuery 
+        }
+
+      }
+
+
+      function hoverImage(e) {
+        e.srcElement.style.opacity = 0.5
+      }
+
+      function moveOutImage(e) {
+        e.srcElement.style.opacity = 1
+      }
+
+      function handleHoverImage () {
+        var img = document.querySelectorAll(".previewImg")
+        for (let i = 0; i < img.length; i++) {
+          img[i].onmouseover = hoverImage
+          img[i].onmouseout = moveOutImage
+        }
+      }
+
+
+      async function buildWebPage() {
+        try {
+          await makeListCategory()
+          await makeListAllVideo()
+        }
+        catch (e) {
+          // location.reload();
+          console.log(e)
+        }
+      }
+
+      buildWebPage()
+
+      document.querySelector(".title").onclick = function () {
+        location.reload()
+      }
+
+    }
+  </script>
+</head>
+<body class="dark console">
+<button class='open-drawer'>|||</button>
+<div class="drawer">
+  <div id="ctgStatus">Loading...</div>
+  <ul class="list">
+  </ul>
+</div>
+<div align="center" class="title"><a>Avlge</a></div>
+<div class="hashtags">
+  <a href="#">Last viewed</a>
+  |
+  <a href="#">Latest</a>
+  |
+  <a href="#">Most viewed</a>
+  |
+  <a href="#">Top rated</a>
+  |
+  <a href="#">Most favoured</a>
+  |
+  <a href="#">Longest</a>
+</div>
+<div class="searchbar" align="center">
+  <input type="text">
+  <button>search</button>
+</div>
+<div id="status">Loading...</div>
+<div id="listvideo" class="row">
+</div>
+<br>
+<div align="center" class="preventSelect"><a id="prePage"></a><span id="page"></span><a id="nextPage"></a></div>
+</body>
+</html>
