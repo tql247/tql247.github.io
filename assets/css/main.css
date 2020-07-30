@@ -53,6 +53,10 @@
   padding-top: 15px;
 }
 
+.container {
+  padding-left: 10px;
+  padding-right: 10px;
+}
 
 /* end spacing */
 
