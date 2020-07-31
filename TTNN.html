@@ -34,7 +34,7 @@
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script>
         var url = "https://api.flickr.com/services/rest/";
-        var key = "23714f0e0aca70b5e9354c77d86a8306";
+        var key = "575ade3d0ab7edec68e62997ca19f98c";
         var currentPage = 1;
         var totalPhotos;
         var totalPages;
@@ -119,9 +119,11 @@
 		
     </script>
 	<script defer>
-	    var audio = new Audio("https://www.buzzsprout.com/1085720/3737720.mp3?blob_id=13949969&client_source=admin&referrer=https%3A%2F%2Fwww.buzzsprout.com%2F1085720%2F3737720%3Fclient_source%3Dadmin%26iframe%3Dtrue");
-		audio.play();
-	    audio.volume = 0.5;
+	    document.body.onfocus = function () {
+            var audio = new Audio("https://www.buzzsprout.com/1085720/3737720.mp3?blob_id=13949969&client_source=admin&referrer=https%3A%2F%2Fwww.buzzsprout.com%2F1085720%2F3737720%3Fclient_source%3Dadmin%26iframe%3Dtrue");
+            audio.play();
+            audio.volume = 0.5;
+        }
 	</script>
 </body>
 </html>
