@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/style2.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link href='https://css.gg/crop.css' rel='stylesheet'>
+    <link href='https://css.gg/menu-grid-o.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+
+</head>
+
+<body class="full p-relative centroid">
+    <div id="nav" style="position: fixed; top:0; left: 0; width: 100%; display: flex; align-items: center; justify-content: space-between;" class="border-tiny">
+        <img style="margin-left: 10px;" alt="" height="50px" src="https://yedda.tech/application/templates/admin/default/images/logo01.png" class="logo10">
+        <div onclick="logout()" style="cursor: pointer; margin-right: 10px; font-weight: bolder; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; color: salmon;">
+            Signout
+        </div>
+    </div>
+    <div class="d-middle-x">
+        <div style="position: relative">
+            <img src="" id="preview" alt="" style="max-width: 500px;max-height: 40vh;">
+            <i class="fa fa-image" style="font-size: 70px; position: relative;">
+                <input onchange="onLoadImage(event)" type="file" style="opacity: 0; top:0; left:0; background-color: red; height: 60px; width: 70px; position: absolute; z-index: 10; ">
+            </i>
+        </div>
+        <br>
+        <div style="border-radius: 5px; padding: 10px 30px 10px 30px; background-color: rgb(9, 187, 83); color: white;">
+            <div>
+                80% Good <i class="fas fa-thumbs-up"></i>
+            </div>
+
+        </div>
+        <br>
+        <div>
+            <canvas style="height: 30vh;" id="myChart"></canvas>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@0.7.12/bcrypt.js"></script>
+<script src="./js/main.js"></script>
+<script>
+</script>
+<script>
+    const labels = [
+        'Crust color',
+        'Sauce distribution',
+        'Cheese appearance',
+        'Topping distribution',
+        'Big burnt spots',
+        'Acceptable to serve',
+    ];
+
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: '',
+            data: [65, 59, 80, 81, 56, 55, 40],
+            barThickness: 46,
+            backgroundColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(255, 205, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(201, 203, 207, 1)'
+            ],
+            // borderColor: [
+            //     'rgb(255, 99, 132)',
+            //     'rgb(255, 159, 64)',
+            //     'rgb(255, 205, 86)',
+            //     'rgb(75, 192, 192)',
+            //     'rgb(54, 162, 235)',
+            //     'rgb(153, 102, 255)',
+            //     'rgb(201, 203, 207)'
+            // ],
+            borderWidth: 1
+        }]
+    };
+
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        display: false,
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }],
+                y: {
+                    suggestedMin: 0,
+                    suggestedMax: 100
+                }
+            },
+            plugins: {
+                title: {
+                    text: 'Analysis results',
+                    display: true
+                },
+                legend: {
+                    display: false
+                }
+            },
+        }
+    };
+
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, config);
+
+    function checkLogin() {
+        const bcrypt = dcodeIO.bcrypt;
+        const username = localStorage.getItem("username") || "";
+        const password = localStorage.getItem("password") || "";
+
+        const checkUser = bcrypt.compareSync(username, "$2a$10$pnWlHG1ytMnBvE0CO3c8aeNRle8FInoGEaYNed.8E1uJ/doRmihWy");
+        const checkPass = bcrypt.compareSync(password, "$2a$10$5huEgr44clx.00W.M8DBOuIo8v5CH8XaRx1Q49lLb1AWzkdO9Rmee");
+
+        if (checkUser && checkPass) {} else {
+            window.location.href = "login.html";
+        }
+    }
+
+    function onLoadImage(event) {
+        console.log('file')
+        console.log(event)
+        preview.src = URL.createObjectURL(event.target.files[0]);
+        preview.onload = function() {
+            URL.revokeObjectURL(preview.src) // free memory
+        }
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.reload();
+    }
+
+    checkLogin();
+</script>
