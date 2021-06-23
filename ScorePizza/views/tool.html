@@ -34,14 +34,14 @@
             </i>
         </div>
         <br>
-        <div style="border-radius: 5px; padding: 10px 30px 10px 30px; background-color: rgb(9, 187, 83); color: white;">
+        <div id="loading" class="hidden lds-dual-ring"></div>
+        <div id="finalResult" class="hidden" style="border-radius: 5px; padding: 10px 30px 10px 30px; background-color: rgb(9, 187, 83); color: white;">
             <div>
                 80% Good <i class="fas fa-thumbs-up"></i>
             </div>
-
         </div>
         <br>
-        <div>
+        <div id="chartWapper" class="hidden">
             <canvas style="height: 30vh;" id="myChart"></canvas>
         </div>
     </div>
@@ -122,7 +122,6 @@
 
 
     var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, config);
 
     function checkLogin() {
         const bcrypt = dcodeIO.bcrypt;
@@ -137,13 +136,29 @@
         }
     }
 
+    function removeResult() {
+        chartWapper.classList.add("hidden");
+        finalResult.classList.add("hidden");
+    }
+
+    function displayResult() {
+        setTimeout(() => {
+            loading.classList.add("hidden");
+            finalResult.classList.remove("hidden");
+            chartWapper.classList.remove("hidden");
+            var myChart = new Chart(ctx, config);
+        }, 5000)
+
+    }
+
     function onLoadImage(event) {
-        console.log('file')
-        console.log(event)
+        removeResult();
         preview.src = URL.createObjectURL(event.target.files[0]);
         preview.onload = function() {
             URL.revokeObjectURL(preview.src) // free memory
         }
+        displayResult();
+        loading.classList.remove("hidden");
     }
 
     function logout() {
