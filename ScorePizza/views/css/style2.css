@@ -239,12 +239,12 @@ body {
     width: 400px;
     height: 490px;
     background: white;
-    color: rgb(51, 92, 153);
+    color: rgb(102 182 192);
     box-sizing: border-box;
     padding: 0px 30px;
     border-radius: 3%;
     padding-top: 10px;
-    box-shadow: 1px 1px 7px rgb(51, 92, 153);
+    box-shadow: 1px 1px 7px rgb(102 182 192);
 }
 
 .forgotbox {
