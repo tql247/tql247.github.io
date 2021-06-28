@@ -199,6 +199,20 @@
     padding: 15px 40px 10px 10px;
 }
 
+.final-result {
+    border-radius: 5px;
+    padding: 10px 30px 10px 30px;
+    color: white;
+}
+
+.good-result {
+    background-color: rgb(9, 187, 83);
+}
+
+.bad-result {
+    background-color: #dd4b39;
+}
+
 .extend-btn-controll:hover {
     background-color: grey;
 }

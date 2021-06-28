@@ -30,15 +30,12 @@
         <div style="position: relative">
             <img src="" id="preview" alt="" style="max-width: 500px;max-height: 40vh;">
             <i class="fa fa-image" style="font-size: 70px; position: relative;">
-                <input onchange="onLoadImage(event)" type="file" style="opacity: 0; top:0; left:0; background-color: red; height: 60px; width: 70px; position: absolute; z-index: 10; ">
+                <input id="fileInput" onchange="onLoadImage(event)" type="file" style="opacity: 0; top:0; left:0; background-color: red; height: 60px; width: 70px; position: absolute; z-index: 10; ">
             </i>
         </div>
         <br>
         <div id="loading" class="hidden lds-dual-ring"></div>
-        <div id="finalResult" class="hidden" style="border-radius: 5px; padding: 10px 30px 10px 30px; background-color: rgb(9, 187, 83); color: white;">
-            <div>
-                80% Good <i class="fas fa-thumbs-up"></i>
-            </div>
+        <div id="finalResult" class="hidden">
         </div>
         <br>
         <div id="chartWapper" class="hidden">
@@ -50,75 +47,19 @@
 </html>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bcryptjs@0.7.12/bcrypt.js"></script>
-<script src="./js/main.js"></script>
 <script>
 </script>
 <script>
     const labels = [
+        'Big burnt spots',
+        'Cheese appearance',
         'Crust color',
         'Sauce distribution',
-        'Cheese appearance',
         'Topping distribution',
-        'Big burnt spots',
-        'Acceptable to serve',
     ];
 
-    const data = {
-        labels: labels,
-        datasets: [{
-            label: '',
-            data: [65, 59, 80, 81, 56, 55, 40],
-            barThickness: 46,
-            backgroundColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(255, 159, 64, 1)',
-                'rgba(255, 205, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(201, 203, 207, 1)'
-            ],
-            // borderColor: [
-            //     'rgb(255, 99, 132)',
-            //     'rgb(255, 159, 64)',
-            //     'rgb(255, 205, 86)',
-            //     'rgb(75, 192, 192)',
-            //     'rgb(54, 162, 235)',
-            //     'rgb(153, 102, 255)',
-            //     'rgb(201, 203, 207)'
-            // ],
-            borderWidth: 1
-        }]
-    };
-
-    const config = {
-        type: 'bar',
-        data: data,
-        options: {
-            scales: {
-                xAxes: [{
-                    ticks: {
-                        display: false,
-                        beginAtZero: true,
-                        max: 100
-                    }
-                }],
-                y: {
-                    suggestedMin: 0,
-                    suggestedMax: 100
-                }
-            },
-            plugins: {
-                title: {
-                    text: 'Analysis results',
-                    display: true
-                },
-                legend: {
-                    display: false
-                }
-            },
-        }
-    };
+    let data;
+    let config;
 
 
     var ctx = document.getElementById('myChart').getContext('2d');
@@ -141,14 +82,91 @@
         finalResult.classList.add("hidden");
     }
 
-    function displayResult() {
+    function setFinalResult(value) {
+        finalResult.innerHTML = `
+            <div class="final-result ${value>50?'good-result':'bad-result'}">
+                <span>${value}</span>%
+                <span>
+                    ${value < 50 ? '<i class="far fa-frown-open"></i>':'<i class="far fa-smile-wink"></i>'}
+                </span>
+            </div>
+        `
+    }
+
+    function setData(dataRes) {
+        data = {
+            labels: labels,
+            datasets: [{
+                label: '',
+                data: [
+                    dataRes["Big Burnt Spots"],
+                    dataRes["Cheese Appearance"],
+                    dataRes["Crust Color"],
+                    dataRes["Sauce Distribution"],
+                    dataRes["Topping Distribution"]
+                ],
+                barThickness: 46,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 205, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(201, 203, 207, 1)'
+                ],
+                // borderColor: [
+                //     'rgb(255, 99, 132)',
+                //     'rgb(255, 159, 64)',
+                //     'rgb(255, 205, 86)',
+                //     'rgb(75, 192, 192)',
+                //     'rgb(54, 162, 235)',
+                //     'rgb(153, 102, 255)',
+                //     'rgb(201, 203, 207)'
+                // ],
+                // borderWidth: 1
+            }]
+        };
+
+        config = {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                    xAxes: [{
+                        ticks: {
+                            display: false,
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }],
+                    y: {
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                },
+                plugins: {
+                    title: {
+                        text: 'Analysis results',
+                        display: true
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+            }
+        };
+    }
+
+    function displayResult(dataRes) {
         setTimeout(() => {
+            setData(dataRes);
+            setFinalResult(dataRes["Acceptable to serve"]);
             loading.classList.add("hidden");
             finalResult.classList.remove("hidden");
             chartWapper.classList.remove("hidden");
             var myChart = new Chart(ctx, config);
-        }, 5000)
-
+        }, 2000)
     }
 
     function onLoadImage(event) {
@@ -156,14 +174,33 @@
         preview.src = URL.createObjectURL(event.target.files[0]);
         preview.onload = function() {
             URL.revokeObjectURL(preview.src) // free memory
-        }
-        displayResult();
+        };
         loading.classList.remove("hidden");
+        requireAI();
     }
 
     function logout() {
         localStorage.clear();
         window.location.reload();
+    }
+
+    function requireAI() {
+        var form = new FormData();
+        form.append("image", fileInput.files[0]);
+
+        var settings = {
+            "url": "http://14.241.228.138:9669/detect",
+            "method": "POST",
+            "timeout": 0,
+            "processData": false,
+            "mimeType": "multipart/form-data",
+            "contentType": false,
+            "data": form
+        };
+
+        $.ajax(settings).done(function(response) {
+            displayResult(JSON.parse(response));
+        });
     }
 
     checkLogin();
